@@ -65,25 +65,25 @@ export const Header = () => {
         </Box>
         <HStack as="nav" spacing={4} display={['none', 'none', 'flex']}>
           <Flex>
-            <Button
+{/*             <Button
               rightIcon={<ChevronDownIcon />}
               onClick={onToggle}
               variant="ghost"
               colorScheme="gray"
               fontWeight={700}
             >
-              Resources
+              Resources */}
             </Button>
             <ResourcesMenu isOpen={isOpen} />
           </Flex>
           <Button
             as={Link}
-            href="/pricing"
+            href="https://typebot-io-docs-emvfb3zhq-tsi-team.vercel.app/"
             variant="ghost"
             colorScheme="gray"
             fontWeight={700}
           >
-            Pricing
+            Docs
           </Button>
           <Button
             as={Link}
