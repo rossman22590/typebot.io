@@ -65,25 +65,25 @@ export const Header = () => {
         </Box>
         <HStack as="nav" spacing={4} display={['none', 'none', 'flex']}>
           <Flex>
-{/*             <Button
+            <Button
               rightIcon={<ChevronDownIcon />}
               onClick={onToggle}
               variant="ghost"
               colorScheme="gray"
               fontWeight={700}
             >
-              Resources */}
+              Resources
             </Button>
             <ResourcesMenu isOpen={isOpen} />
           </Flex>
           <Button
             as={Link}
-            href="https://typebot-io-docs-emvfb3zhq-tsi-team.vercel.app/"
+            href="https://typebot-builder-tsi.vercel.app/"
             variant="ghost"
             colorScheme="gray"
             fontWeight={700}
           >
-            Docs
+            Pricing
           </Button>
           <Button
             as={Link}
