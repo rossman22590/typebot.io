@@ -1,6 +1,6 @@
 {
   "name": "@typebot.io/nextjs",
-  "version": "0.2.22",
+  "version": "0.2.31",
   "description": "Convenient library to display typebots on your Next.js website",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -35,10 +35,10 @@
     "rollup-plugin-typescript-paths": "1.4.0",
     "tslib": "2.6.0",
     "tsx": "3.12.7",
-    "typescript": "5.2.2"
+    "typescript": "5.3.2"
   },
   "peerDependencies": {
-    "next": "12.x || 13.x",
+    "next": "12.x || 13.x || 14.x",
     "react": "18.x"
   }
 }
