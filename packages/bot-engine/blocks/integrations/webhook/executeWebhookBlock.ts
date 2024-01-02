@@ -41,9 +41,15 @@ export const longReqTimeoutWhitelist = [
   'https://api.anthropic.com',
 ]
 
+export const webhookSuccessDescription = `Webhook successfuly executed.`
+export const webhookErrorDescription = `Webhook returned an error.`
+
+type Params = { disableRequestTimeout?: boolean }
+
 export const executeWebhookBlock = async (
   state: SessionState,
-  block: WebhookBlock | ZapierBlock | MakeComBlock | PabblyConnectBlock
+  block: WebhookBlock | ZapierBlock | MakeComBlock | PabblyConnectBlock,
+  params: Params = {}
 ): Promise<ExecuteIntegrationResponse> => {
   const logs: ChatLog[] = []
   const webhook =
@@ -80,7 +86,7 @@ export const executeWebhookBlock = async (
     response: webhookResponse,
     logs: executeWebhookLogs,
     startTimeShouldBeUpdated,
-  } = await executeWebhook(parsedWebhook)
+  } = await executeWebhook(parsedWebhook, params)
 
   return {
     ...resumeWebhookExecution({
@@ -160,7 +166,8 @@ const parseWebhookAttributes =
   }
 
 export const executeWebhook = async (
-  webhook: ParsedWebhook
+  webhook: ParsedWebhook,
+  params: Params = {}
 ): Promise<{
   response: WebhookResponse
   logs?: ChatLog[]
@@ -170,9 +177,11 @@ export const executeWebhook = async (
   const { headers, url, method, basicAuth, body, isJson } = webhook
   const contentType = headers ? headers['Content-Type'] : undefined
 
-  const isLongRequest = longReqTimeoutWhitelist.some((whiteListedUrl) =>
-    url?.includes(whiteListedUrl)
-  )
+  const isLongRequest = params.disableRequestTimeout
+    ? true
+    : longReqTimeoutWhitelist.some((whiteListedUrl) =>
+        url?.includes(whiteListedUrl)
+      )
 
   const request = {
     url,
@@ -195,7 +204,7 @@ export const executeWebhook = async (
     const response = await got(request.url, omit(request, 'url'))
     logs.push({
       status: 'success',
-      description: `Webhook successfuly executed.`,
+      description: webhookSuccessDescription,
       details: {
         statusCode: response.statusCode,
         request,
@@ -218,7 +227,7 @@ export const executeWebhook = async (
       }
       logs.push({
         status: 'error',
-        description: `Webhook returned an error.`,
+        description: webhookErrorDescription,
         details: {
           statusCode: error.response.statusCode,
           request,
