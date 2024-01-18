@@ -5529,6 +5529,11 @@
                                 "required": [
                                   "id"
                                 ]
+                              },
+                              "timeout": {
+                                "type": "number",
+                                "minimum": 1,
+                                "maximum": 120
                               }
                             }
                           },
@@ -5981,6 +5986,11 @@
                                 "required": [
                                   "id"
                                 ]
+                              },
+                              "timeout": {
+                                "type": "number",
+                                "minimum": 1,
+                                "maximum": 120
                               }
                             }
                           },
@@ -6195,6 +6205,11 @@
                                 "required": [
                                   "id"
                                 ]
+                              },
+                              "timeout": {
+                                "type": "number",
+                                "minimum": 1,
+                                "maximum": 120
                               }
                             }
                           },
@@ -6344,6 +6359,11 @@
                                 "required": [
                                   "id"
                                 ]
+                              },
+                              "timeout": {
+                                "type": "number",
+                                "minimum": 1,
+                                "maximum": 120
                               }
                             }
                           },
@@ -7657,6 +7677,17 @@
             "properties": {
               "isEnabled": {
                 "type": "boolean"
+              }
+            }
+          },
+          "security": {
+            "type": "object",
+            "properties": {
+              "allowedOrigins": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
               }
             }
           }
@@ -9211,6 +9242,11 @@
                             "type": "string"
                           }
                         }
+                      },
+                      "timeout": {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 120
                       }
                     }
                   }
@@ -9654,6 +9690,11 @@
                             "type": "string"
                           }
                         }
+                      },
+                      "timeout": {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 120
                       }
                     }
                   }
@@ -9859,6 +9900,11 @@
                             "type": "string"
                           }
                         }
+                      },
+                      "timeout": {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 120
                       }
                     }
                   }
@@ -9999,6 +10045,11 @@
                             "type": "string"
                           }
                         }
+                      },
+                      "timeout": {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 120
                       }
                     }
                   }
@@ -10249,7 +10300,8 @@
                   "openai",
                   "zemantic-ai",
                   "cal-com",
-                  "chat-node"
+                  "chat-node",
+                  "qr-code"
                 ]
               },
               "options": {}

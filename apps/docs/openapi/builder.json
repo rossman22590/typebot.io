@@ -1411,6 +1411,11 @@
                                                     "required": [
                                                       "id"
                                                     ]
+                                                  },
+                                                  "timeout": {
+                                                    "type": "number",
+                                                    "minimum": 1,
+                                                    "maximum": 120
                                                   }
                                                 }
                                               },
@@ -1863,6 +1868,11 @@
                                                     "required": [
                                                       "id"
                                                     ]
+                                                  },
+                                                  "timeout": {
+                                                    "type": "number",
+                                                    "minimum": 1,
+                                                    "maximum": 120
                                                   }
                                                 }
                                               },
@@ -2077,6 +2087,11 @@
                                                     "required": [
                                                       "id"
                                                     ]
+                                                  },
+                                                  "timeout": {
+                                                    "type": "number",
+                                                    "minimum": 1,
+                                                    "maximum": 120
                                                   }
                                                 }
                                               },
@@ -2226,6 +2241,11 @@
                                                     "required": [
                                                       "id"
                                                     ]
+                                                  },
+                                                  "timeout": {
+                                                    "type": "number",
+                                                    "minimum": 1,
+                                                    "maximum": 120
                                                   }
                                                 }
                                               },
@@ -4032,6 +4052,10 @@
                           "type": "string",
                           "nullable": true
                         },
+                        "customChatsLimit": {
+                          "type": "number",
+                          "nullable": true
+                        },
                         "customSeatsLimit": {
                           "type": "number",
                           "nullable": true
@@ -4055,6 +4079,7 @@
                         "icon",
                         "plan",
                         "stripeId",
+                        "customChatsLimit",
                         "customSeatsLimit",
                         "isSuspended",
                         "isPastDue",
@@ -7595,6 +7620,11 @@
                                                 "required": [
                                                   "id"
                                                 ]
+                                              },
+                                              "timeout": {
+                                                "type": "number",
+                                                "minimum": 1,
+                                                "maximum": 120
                                               }
                                             }
                                           },
@@ -8047,6 +8077,11 @@
                                                 "required": [
                                                   "id"
                                                 ]
+                                              },
+                                              "timeout": {
+                                                "type": "number",
+                                                "minimum": 1,
+                                                "maximum": 120
                                               }
                                             }
                                           },
@@ -8261,6 +8296,11 @@
                                                 "required": [
                                                   "id"
                                                 ]
+                                              },
+                                              "timeout": {
+                                                "type": "number",
+                                                "minimum": 1,
+                                                "maximum": 120
                                               }
                                             }
                                           },
@@ -8410,6 +8450,11 @@
                                                 "required": [
                                                   "id"
                                                 ]
+                                              },
+                                              "timeout": {
+                                                "type": "number",
+                                                "minimum": 1,
+                                                "maximum": 120
                                               }
                                             }
                                           },
@@ -12096,6 +12141,11 @@
                                                 "required": [
                                                   "id"
                                                 ]
+                                              },
+                                              "timeout": {
+                                                "type": "number",
+                                                "minimum": 1,
+                                                "maximum": 120
                                               }
                                             }
                                           },
@@ -12548,6 +12598,11 @@
                                                 "required": [
                                                   "id"
                                                 ]
+                                              },
+                                              "timeout": {
+                                                "type": "number",
+                                                "minimum": 1,
+                                                "maximum": 120
                                               }
                                             }
                                           },
@@ -12762,6 +12817,11 @@
                                                 "required": [
                                                   "id"
                                                 ]
+                                              },
+                                              "timeout": {
+                                                "type": "number",
+                                                "minimum": 1,
+                                                "maximum": 120
                                               }
                                             }
                                           },
@@ -12911,6 +12971,11 @@
                                                 "required": [
                                                   "id"
                                                 ]
+                                              },
+                                              "timeout": {
+                                                "type": "number",
+                                                "minimum": 1,
+                                                "maximum": 120
                                               }
                                             }
                                           },
@@ -15434,7 +15499,8 @@
             "in": "path",
             "name": "resultId",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "description": "The `resultId` is returned by the /startChat endpoint or you can find it by listing results with `/results` endpoint"
             },
             "required": true
           }
@@ -25701,6 +25767,11 @@
                             "type": "string"
                           }
                         }
+                      },
+                      "timeout": {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 120
                       }
                     }
                   }
@@ -26144,6 +26215,11 @@
                             "type": "string"
                           }
                         }
+                      },
+                      "timeout": {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 120
                       }
                     }
                   }
@@ -26349,6 +26425,11 @@
                             "type": "string"
                           }
                         }
+                      },
+                      "timeout": {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 120
                       }
                     }
                   }
@@ -26489,6 +26570,11 @@
                             "type": "string"
                           }
                         }
+                      },
+                      "timeout": {
+                        "type": "number",
+                        "minimum": 1,
+                        "maximum": 120
                       }
                     }
                   }
@@ -26739,7 +26825,8 @@
                   "openai",
                   "zemantic-ai",
                   "cal-com",
-                  "chat-node"
+                  "chat-node",
+                  "qr-code"
                 ]
               },
               "options": {}
@@ -27368,6 +27455,17 @@
             "properties": {
               "isEnabled": {
                 "type": "boolean"
+              }
+            }
+          },
+          "security": {
+            "type": "object",
+            "properties": {
+              "allowedOrigins": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
               }
             }
           }
@@ -28977,6 +29075,11 @@
                                 "required": [
                                   "id"
                                 ]
+                              },
+                              "timeout": {
+                                "type": "number",
+                                "minimum": 1,
+                                "maximum": 120
                               }
                             }
                           },
@@ -29429,6 +29532,11 @@
                                 "required": [
                                   "id"
                                 ]
+                              },
+                              "timeout": {
+                                "type": "number",
+                                "minimum": 1,
+                                "maximum": 120
                               }
                             }
                           },
@@ -29643,6 +29751,11 @@
                                 "required": [
                                   "id"
                                 ]
+                              },
+                              "timeout": {
+                                "type": "number",
+                                "minimum": 1,
+                                "maximum": 120
                               }
                             }
                           },
@@ -29792,6 +29905,11 @@
                                 "required": [
                                   "id"
                                 ]
+                              },
+                              "timeout": {
+                                "type": "number",
+                                "minimum": 1,
+                                "maximum": 120
                               }
                             }
                           },
@@ -31766,6 +31884,11 @@
                                 "required": [
                                   "id"
                                 ]
+                              },
+                              "timeout": {
+                                "type": "number",
+                                "minimum": 1,
+                                "maximum": 120
                               }
                             }
                           },
@@ -32218,6 +32341,11 @@
                                 "required": [
                                   "id"
                                 ]
+                              },
+                              "timeout": {
+                                "type": "number",
+                                "minimum": 1,
+                                "maximum": 120
                               }
                             }
                           },
@@ -32432,6 +32560,11 @@
                                 "required": [
                                   "id"
                                 ]
+                              },
+                              "timeout": {
+                                "type": "number",
+                                "minimum": 1,
+                                "maximum": 120
                               }
                             }
                           },
@@ -32581,6 +32714,11 @@
                                 "required": [
                                   "id"
                                 ]
+                              },
+                              "timeout": {
+                                "type": "number",
+                                "minimum": 1,
+                                "maximum": 120
                               }
                             }
                           },
