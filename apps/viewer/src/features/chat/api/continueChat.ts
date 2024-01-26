@@ -55,7 +55,11 @@ export const continueChat = publicProcedure
     ) {
       if (origin && session.state.allowedOrigins.includes(origin))
         res.setHeader('Access-Control-Allow-Origin', origin)
-      else res.removeHeader('Access-Control-Allow-Origin')
+      else
+        res.setHeader(
+          'Access-Control-Allow-Origin',
+          session.state.allowedOrigins[0]
+        )
     }
 
     const {
@@ -82,6 +86,9 @@ export const continueChat = publicProcedure
         logs,
         clientSideActions,
         visitedEdges,
+        hasCustomEmbedBubble: messages.some(
+          (message) => message.type === 'custom-embed'
+        ),
       })
 
     const isPreview = isNotDefined(session.state.typebotsQueue[0].resultId)
