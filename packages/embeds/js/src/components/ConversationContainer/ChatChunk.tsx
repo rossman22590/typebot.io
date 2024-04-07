@@ -12,11 +12,12 @@ import { defaultSettings } from '@typebot.io/schemas/features/typebot/settings/c
 type Props = Pick<ContinueChatResponse, 'messages' | 'input'> & {
   theme: Theme
   settings: Settings
-  inputIndex: number
+  index: number
   context: BotContext
   hasError: boolean
   hideAvatar: boolean
   streamingMessageId: ChatChunkType['streamingMessageId']
+  isTransitionDisabled?: boolean
   onNewBubbleDisplayed: (blockId: string) => Promise<void>
   onScrollToBottom: (top?: number) => void
   onSubmit: (input?: string) => void
@@ -26,7 +27,9 @@ type Props = Pick<ContinueChatResponse, 'messages' | 'input'> & {
 
 export const ChatChunk = (props: Props) => {
   let inputRef: HTMLDivElement | undefined
-  const [displayedMessageIndex, setDisplayedMessageIndex] = createSignal(0)
+  const [displayedMessageIndex, setDisplayedMessageIndex] = createSignal(
+    props.isTransitionDisabled ? props.messages.length : 0
+  )
   const [lastBubbleOffsetTop, setLastBubbleOffsetTop] = createSignal<number>()
 
   onMount(() => {
@@ -40,6 +43,19 @@ export const ChatChunk = (props: Props) => {
   })
 
   const displayNextMessage = async (bubbleOffsetTop?: number) => {
+    if (
+      (props.settings.typingEmulation?.delayBetweenBubbles ??
+        defaultSettings.typingEmulation.delayBetweenBubbles) > 0 &&
+      displayedMessageIndex() < props.messages.length - 1
+    ) {
+      await new Promise((resolve) =>
+        setTimeout(
+          resolve,
+          (props.settings.typingEmulation?.delayBetweenBubbles ??
+            defaultSettings.typingEmulation.delayBetweenBubbles) * 1000
+        )
+      )
+    }
     const lastBubbleBlockId = props.messages[displayedMessageIndex()].id
     await props.onNewBubbleDisplayed(lastBubbleBlockId)
     setDisplayedMessageIndex(
@@ -68,6 +84,7 @@ export const ChatChunk = (props: Props) => {
             <AvatarSideContainer
               hostAvatarSrc={props.theme.chat?.hostAvatar?.url}
               hideAvatar={props.hideAvatar}
+              isTransitionDisabled={props.isTransitionDisabled}
             />
           </Show>
 
@@ -86,11 +103,20 @@ export const ChatChunk = (props: Props) => {
             }}
           >
             <For each={props.messages.slice(0, displayedMessageIndex() + 1)}>
-              {(message) => (
+              {(message, idx) => (
                 <HostBubble
                   message={message}
                   typingEmulation={props.settings.typingEmulation}
-                  onTransitionEnd={displayNextMessage}
+                  isTypingSkipped={
+                    (props.settings.typingEmulation?.isDisabledOnFirstMessage ??
+                      defaultSettings.typingEmulation
+                        .isDisabledOnFirstMessage) &&
+                    props.index === 0 &&
+                    idx() === 0
+                  }
+                  onTransitionEnd={
+                    props.isTransitionDisabled ? undefined : displayNextMessage
+                  }
                   onCompleted={props.onSubmit}
                 />
               )}
@@ -102,7 +128,7 @@ export const ChatChunk = (props: Props) => {
         <InputChatBlock
           ref={inputRef}
           block={props.input}
-          inputIndex={props.inputIndex}
+          chunkIndex={props.index}
           hasHostAvatar={
             props.theme.chat?.hostAvatar?.isEnabled ??
             defaultTheme.chat.hostAvatar.isEnabled

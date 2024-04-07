@@ -46,7 +46,9 @@ const boolean = z.enum(['true', 'false']).transform((value) => value === 'true')
 
 const baseEnv = {
   server: {
-    NODE_ENV: z.enum(['development', 'production', 'test']).optional(),
+    NODE_ENV: z
+      .enum(['development', 'staging', 'production', 'test'])
+      .optional(),
     DATABASE_URL: z
       .string()
       .url()
@@ -57,7 +59,11 @@ const baseEnv = {
       z.string().url()
     ),
     DISABLE_SIGNUP: boolean.optional().default('false'),
-    ADMIN_EMAIL: z.string().email().optional(),
+    ADMIN_EMAIL: z
+      .string()
+      .min(1)
+      .optional()
+      .transform((val) => val?.split(',')),
     DEFAULT_WORKSPACE_PLAN: z
       .enum(['FREE', 'STARTER', 'PRO', 'LIFETIME', 'UNLIMITED'])
       .refine((str) =>
@@ -95,6 +101,20 @@ const baseEnv = {
     ),
     NEXT_PUBLIC_ONBOARDING_TYPEBOT_ID: z.string().min(1).optional(),
     NEXT_PUBLIC_BOT_FILE_UPLOAD_MAX_SIZE: z.coerce.number().optional(),
+    NEXT_PUBLIC_CHAT_API_URL: z.string().url().optional(),
+    // To remove to deploy chat API for all typebots
+    NEXT_PUBLIC_USE_EXPERIMENTAL_CHAT_API_ON: z
+      .string()
+      .min(1)
+      .transform((val) =>
+        val.split('/').map((s) => s.split(',').map((s) => s.split('|')))
+      )
+      .optional(),
+    NEXT_PUBLIC_VIEWER_404_TITLE: z.string().optional().default('404'),
+    NEXT_PUBLIC_VIEWER_404_SUBTITLE: z
+      .string()
+      .optional()
+      .default("The bot you're looking for doesn't exist"),
   },
   runtimeEnv: {
     NEXT_PUBLIC_E2E_TEST: getRuntimeVariable('NEXT_PUBLIC_E2E_TEST'),
@@ -104,6 +124,16 @@ const baseEnv = {
     ),
     NEXT_PUBLIC_BOT_FILE_UPLOAD_MAX_SIZE: getRuntimeVariable(
       'NEXT_PUBLIC_BOT_FILE_UPLOAD_MAX_SIZE'
+    ),
+    NEXT_PUBLIC_CHAT_API_URL: getRuntimeVariable('NEXT_PUBLIC_CHAT_API_URL'),
+    NEXT_PUBLIC_USE_EXPERIMENTAL_CHAT_API_ON: getRuntimeVariable(
+      'NEXT_PUBLIC_USE_EXPERIMENTAL_CHAT_API_ON'
+    ),
+    NEXT_PUBLIC_VIEWER_404_TITLE: getRuntimeVariable(
+      'NEXT_PUBLIC_VIEWER_404_TITLE'
+    ),
+    NEXT_PUBLIC_VIEWER_404_SUBTITLE: getRuntimeVariable(
+      'NEXT_PUBLIC_VIEWER_404_SUBTITLE'
     ),
   },
 }
@@ -282,7 +312,17 @@ const whatsAppEnv = {
     META_SYSTEM_USER_TOKEN: z.string().min(1).optional(),
     WHATSAPP_PREVIEW_FROM_PHONE_NUMBER_ID: z.string().min(1).optional(),
     WHATSAPP_PREVIEW_TEMPLATE_NAME: z.string().min(1).optional(),
-    WHATSAPP_PREVIEW_TEMPLATE_LANG: z.string().min(1).optional().default('en'),
+    WHATSAPP_PREVIEW_TEMPLATE_LANG: z
+      .string()
+      .min(1)
+      .optional()
+      .default('en_US'),
+    WHATSAPP_CLOUD_API_URL: z
+      .string()
+      .url()
+      .optional()
+      .default('https://graph.facebook.com'),
+    WHATSAPP_INTERACTIVE_GROUP_SIZE: z.coerce.number().optional().default(3),
   },
 }
 
@@ -309,8 +349,6 @@ const sentryEnv = {
 
 const telemetryEnv = {
   server: {
-    TELEMETRY_WEBHOOK_URL: z.string().url().optional(),
-    TELEMETRY_WEBHOOK_BEARER_TOKEN: z.string().min(1).optional(),
     MESSAGE_WEBHOOK_URL: z.string().url().optional(),
     USER_CREATED_WEBHOOK_URL: z.string().url().optional(),
   },

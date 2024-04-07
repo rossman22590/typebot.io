@@ -16,10 +16,11 @@ import { getNewUserInvitations } from '@/features/auth/helpers/getNewUserInvitat
 import { sendVerificationRequest } from '@/features/auth/helpers/sendVerificationRequest'
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis/nodejs'
-import got from 'got'
+import ky from 'ky'
 import { env } from '@typebot.io/env'
 import * as Sentry from '@sentry/nextjs'
 import { getIp } from '@typebot.io/lib/getIp'
+import { trackEvents } from '@typebot.io/telemetry/trackEvents'
 
 const providers: Provider[] = []
 
@@ -163,10 +164,12 @@ export const getAuthOptions = ({
       if (!account) return false
       const isNewUser = !('createdAt' in user && isDefined(user.createdAt))
       if (isNewUser && user.email) {
-        const { body } = await got.get(
-          'https://raw.githubusercontent.com/disposable-email-domains/disposable-email-domains/master/disposable_email_blocklist.conf'
-        )
-        const disposableEmailDomains = body.split('\n')
+        const data = await ky
+          .get(
+            'https://raw.githubusercontent.com/disposable-email-domains/disposable-email-domains/master/disposable_email_blocklist.conf'
+          )
+          .text()
+        const disposableEmailDomains = data.split('\n')
         if (disposableEmailDomains.includes(user.email.split('@')[1]))
           return false
       }
@@ -174,7 +177,7 @@ export const getAuthOptions = ({
         const { invitations, workspaceInvitations } =
           await getNewUserInvitations(prisma, user.email)
         if (invitations.length === 0 && workspaceInvitations.length === 0)
-          return false
+          throw new Error('sign-up-disabled')
       }
       const requiredGroups = getRequiredGroups(account.provider)
       if (requiredGroups.length > 0) {
@@ -218,11 +221,18 @@ const updateLastActivityDate = async (user: User) => {
     first.getMonth() === second.getMonth() &&
     first.getDate() === second.getDate()
 
-  if (!datesAreOnSameDay(user.lastActivityAt, new Date()))
+  if (!datesAreOnSameDay(user.lastActivityAt, new Date())) {
     await prisma.user.updateMany({
       where: { id: user.id },
       data: { lastActivityAt: new Date() },
     })
+    await trackEvents([
+      {
+        name: 'User logged in',
+        userId: user.id,
+      },
+    ])
+  }
 }
 
 const getUserGroups = async (account: Account): Promise<string[]> => {

@@ -20,7 +20,6 @@ import { GeneralSettingsForm } from './GeneralSettingsForm'
 import { MetadataForm } from './MetadataForm'
 import { TypingEmulationForm } from './TypingEmulationForm'
 import { useTypebot } from '@/features/editor/providers/TypebotProvider'
-import { headerHeight } from '@/features/editor/constants'
 import { SecurityForm } from './SecurityForm'
 
 export const SettingsSideMenu = () => {
@@ -52,11 +51,11 @@ export const SettingsSideMenu = () => {
     <Stack
       flex="1"
       maxW="400px"
-      height={`calc(100vh - ${headerHeight}px)`}
+      height="full"
       borderRightWidth={1}
       pt={10}
       spacing={10}
-      overflowY="scroll"
+      overflowY="auto"
       pb="20"
     >
       <Heading fontSize="xl" textAlign="center">
@@ -84,7 +83,7 @@ export const SettingsSideMenu = () => {
           <AccordionButton py={6}>
             <HStack flex="1" pl={2}>
               <ChatIcon />
-              <Heading fontSize="lg">Typing emulation</Heading>
+              <Heading fontSize="lg">Typing</Heading>
             </HStack>
             <AccordionIcon />
           </AccordionButton>

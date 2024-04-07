@@ -20,10 +20,12 @@ export const TextInput = (props: Props) => {
   const handleInput = (inputValue: string) => setInputValue(inputValue)
 
   const checkIfInputIsValid = () =>
-    inputValue() !== '' && inputRef?.reportValidity()
+    inputRef?.value !== '' && inputRef?.reportValidity()
 
   const submit = () => {
-    if (checkIfInputIsValid()) props.onSubmit({ value: inputValue() })
+    if (checkIfInputIsValid())
+      props.onSubmit({ value: inputRef?.value ?? inputValue() })
+    else inputRef?.focus()
   }
 
   const submitWhenEnter = (e: KeyboardEvent) => {
@@ -82,12 +84,7 @@ export const TextInput = (props: Props) => {
           }
         />
       )}
-      <SendButton
-        type="button"
-        isDisabled={inputValue() === ''}
-        class="my-2 ml-2"
-        on:click={submit}
-      >
+      <SendButton type="button" class="my-2 ml-2" on:click={submit}>
         {props.block.options?.labels?.button ??
           defaultTextInputOptions.labels.button}
       </SendButton>
